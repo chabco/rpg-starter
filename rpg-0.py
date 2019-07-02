@@ -9,19 +9,24 @@ In this simple RPG game, the hero fights the goblin. He has the options to:
 import random
 
 class character():
-    def __init__(self, name, health, power, power2):
+    def __init__(self, name, health, power, power2, heal):
         self.name = name
         self.health = health
         self.power = power
         self.power2 = power2
+        self.heal = heal
 
     def attack(self, enemy):
         enemy.health -= self.power
         print('{} does {} to {}.'.format(self.name, self.power, enemy.name))
 
     def attack2(self, enemy):
-        enemy.health -=self.power2
+        enemy.health -= self.power2
         print('critical strike! {} does {} to {}.'.format(self.name, self.power2, enemy.name))
+
+    def regenerate(self):
+        self.health += self.heal
+        print('{} healed for {} health points.'.format(self.name, self.heal))
 
     def print_status(self):
         print('{} has {} health and {} power.'.format(self.name, self.health, self.power))
@@ -30,12 +35,14 @@ class character():
         return self.health > 0
         
 def main():
-    hero1 = character('hero', 10, 5, 10)
-    goblin1 = character('goblin', 6, 2, 2)
+    hero1 = character('hero', 20, 5, 10, 0)
+    goblin1 = character('goblin', 14, 4, 6, 0)
+    medic =character('medic', 12, 2, 4, 2)
 
-    while goblin1.alive() and hero1.alive():
+    while goblin1.alive() and hero1.alive() and medic.alive():
         goblin1.print_status()
         hero1.print_status()
+        medic.print_status()
         print()
         print("what do you want to do?")
         print("1. fight goblin")
@@ -45,7 +52,7 @@ def main():
         user_input = input()
         if user_input == "1":
             # Hero attacks goblin
-            if random.random() < 0.2:
+            if random.random() <= 0.2:
                 hero1.attack2(goblin1)
             else:
                 hero1.attack(goblin1)
@@ -60,11 +67,18 @@ def main():
             print("invalid input %r" % user_input)
 
         if goblin1.alive():
-            # Goblin attacks hero
-            goblin1.attack(hero1)
-            if not hero1.alive():
-                print('YOU DIED.')
+            # goblin attacks hero or medic
+            if random.random() < 0.5:
+                goblin1.attack(hero1)
+            else:
+                goblin1.attack(medic)
 
-                
+                if medic.alive():
+                    # medic heals at 20% chance
+                    if random.random() < 0.2:
+                        medic.regenerate()
+
+        if not hero1.alive() and medic.alive():
+                    print('game over.')
 
 main()
