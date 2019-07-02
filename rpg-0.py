@@ -39,6 +39,7 @@ def main():
     goblin1 = character('goblin', 14, 4, 6, 0)
     medic = character('medic', 12, 2, 4, 2)
     shadow = character('shadow', 1, 7, 14, 0)
+    zombie = character('zombie', 0, 5, 5, 0)
     shadow_attacked = 0
 
     while goblin1.alive() and hero1.alive() and medic.alive() and shadow.alive():
@@ -46,6 +47,7 @@ def main():
         hero1.print_status()
         medic.print_status()
         shadow.print_status()
+        zombie.print_status()
         print()
         print("what do you want to do?")
         print("1. fight goblin")
@@ -71,10 +73,10 @@ def main():
 
         if goblin1.alive():
             # goblin attacks hero or medic
-            if random.random() < 0.33:
+            if random.random() < 0.25:
                 goblin1.attack(hero1)
 
-            elif random.random() < 0.33:
+            elif random.random() < 0.25:
                 goblin1.attack(medic)
 
                 if medic.alive():
@@ -82,12 +84,16 @@ def main():
                     if random.random() < 0.2:
                         medic.regenerate()
 
-            elif random.random() < .99:
+            elif random.random() < .25:
                 shadow_attacked += 1
                 print('goblin attempts to attack shadow!')
                 if shadow_attacked >= 10:
                     goblin1.attack(shadow)
                     print('goblin finally hit the shadow! game over.')
+
+            elif random.random() < .25:
+                goblin1.attack(zombie)
+                print('zombie takes damage but remains in battle!')
 
 
 
